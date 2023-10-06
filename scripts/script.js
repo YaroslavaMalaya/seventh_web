@@ -1,3 +1,17 @@
+class TodoItem { 
+    constructor(taskText, date) { 
+        this.taskText = taskText; 
+        this.date = date; 
+    } 
+} 
+ 
+class TodoItemPremium extends TodoItem { 
+    constructor(taskText, date, image) { 
+        super(taskText, date); 
+        this.image = image; 
+    } 
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const input = document.getElementById("task");
     const add = document.getElementById("add");
@@ -133,4 +147,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
         }
     });
+
+    let isSorted = true; 
+    const sortButton = document.getElementById("sortButton"); 
+    sortButton.addEventListener("click", function () { 
+        const allTasks = Array.from(tasks.children); 
+        allTasks.sort((a, b) => { 
+            const dateA = new Date(a.querySelector("#date").textContent); 
+            const dateB = new Date(b.querySelector("#date").textContent); 
+            // If (dateA - dateB) is negative: dateA comes before dateB, if it's positive dateB comes before dateA 
+            return isSorted ? dateA - dateB : dateB - dateA;  
+        }); 
+        allTasks.forEach(task => tasks.appendChild(task)); 
+        isSorted = !isSorted; 
+    });
+
 });

@@ -44,15 +44,31 @@ button {
     font-size: 15px; 
     border: 1px solid #0400ff;
     background: #0400ff;
-    border-radius: 20px;
+    border-radius: 13px;
     cursor: pointer;
-    margin: 5px;
 }
 
 button:active{
     color: #0400ff;
     border: 1px solid #0400ff;
     background-color: white; 
+}
+
+#sortButton{
+    color: #9b9bfe; 
+    background-color: inherit;
+    text-align: center;
+    padding: 0px 0px;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px; 
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+#sortButton:active{
+    color: #0400ff;
 }
 
 #tasks {
