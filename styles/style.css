@@ -1,0 +1,100 @@
+body {
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(255, 245, 245);
+}
+
+#container1{
+    max-width: 400px;
+    margin: 30px auto;
+    background-color: #e0e0fa;
+    padding: 20px;
+    border-radius: 30px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+#text {
+    text-align: center;
+    font-size: 35px;
+}
+
+#todoList {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+#task {
+    width: 200px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #0400ff;
+}
+
+button {
+    color: white; 
+    text-align: center;
+    padding: 8px 15px;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px; 
+    border: 1px solid #0400ff;
+    background: #0400ff;
+    border-radius: 20px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+button:active{
+    color: #0400ff;
+    border: 1px solid #0400ff;
+    background-color: white; 
+}
+
+#tasks {
+    list-style-type: none;
+    padding: 0;
+}
+
+#item{
+    margin-top: 10px;
+    padding: 8px 8px;
+    background-color: #eeeefd;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); 
+    position: relative;
+}
+
+#date{
+    color: #888;
+    font-size: 12px;
+    margin-top: 0px;
+}
+
+#textitem{
+    width: 250px;
+    margin-top: -8px;
+    padding-top: 10px;
+}
+
+.delete{
+    position: fixed;
+    margin-top: -30px;
+    margin-left: 270px;
+}
+
+#container2 {
+    text-align: start;
+}
+
+#editInput{
+    background-color: inherit;
+    border: none;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+}
