@@ -188,6 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 checked: task.querySelector(".check").checked,
             });
         });
+        localStorage.setItem('todos', JSON.stringify(tasksArray));
     }
     
 
@@ -198,16 +199,16 @@ document.addEventListener("DOMContentLoaded", function () {
             tasksArray.forEach(taskObj => {
                 const taskItem = document.createElement("li");
                 taskItem.innerHTML = `
-                <div id="item">
-                <p id="date">${taskObj.date}</p>
-                <div id="textitem">
-                    <label>
-                        <input type="checkbox" class="check" ${taskObj.checked ? "checked" : ""}>
-                        <span id="text1">${taskObj.taskText}</span>
-                    </label>
-                </div>
-                <button class="delete">Delete</button>
-                </div>
+                    <div id="item">
+                    <p id="date">${taskObj.date}</p>
+                    <div id="textitem">
+                        <label>
+                            <input type="checkbox" class="check" ${taskObj.checked ? "checked" : ""}>
+                            <span id="text1">${taskObj.taskText}</span>
+                        </label>
+                    </div>
+                    <button class="delete">Delete</button>
+                    </div>
                 `;
                 
                 const label = taskItem.querySelector("span");
