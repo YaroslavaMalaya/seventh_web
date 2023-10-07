@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const removeAll = document.getElementById("removeAll");
     const sortButton = document.getElementById("sortButton"); 
     const clearStorageButton = document.getElementById("clearStorage");
+    const pickToDoButton = document.getElementById("pickToDo");
 
     add.addEventListener("click", addTask);
     input.addEventListener("keydown", function (event) {
@@ -27,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
             addTask();
         }
     });
-
+    autoSaveToLocalStorage();
     loadTodosFromLocalStorage();
 
     function addTask() {
@@ -44,14 +45,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const date = `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
             taskItem.innerHTML = `
                 <div id="item">
-                <p id="date">${date}</p>
-                <div id="textitem">
-                    <label>
-                        <input type="checkbox" class="check">
-                        <span id="text1">${taskText}</span>
-                    </label>
-                </div>
-                <button class="delete">Delete</button>
+                    <p id="date">${date}</p>
+                    <div id="textitem">
+                        <label>
+                            <input type="checkbox" class="check">
+                            <span id="text1">${taskText}</span>
+                        </label>
+                    </div>
+                    <button class="delete">Delete</button>
                 </div>
             `;
             
@@ -126,6 +127,61 @@ document.addEventListener("DOMContentLoaded", function () {
         saveTodosToLocalStorage();
     }
 
+    function saveTodosToLocalStorage() {
+        const taskElements = tasks.querySelectorAll("li");
+        const tasksArray = [];
+    
+        taskElements.forEach(task => {
+            tasksArray.push({
+                taskText: task.querySelector("#text1").textContent,
+                date: task.querySelector("#date").textContent,
+                checked: task.querySelector(".check").checked,
+                active: task.classList.contains('active')
+            });
+        });
+        localStorage.setItem('todos', JSON.stringify(tasksArray));
+    }
+    
+    function loadTodosFromLocalStorage() {
+        const storedTasks = localStorage.getItem('todos');
+        if (storedTasks) {
+            const tasksArray = JSON.parse(storedTasks);
+            tasksArray.forEach(taskObj => {
+                const taskItem = document.createElement("li");
+                taskItem.innerHTML = `
+                    <div id="item">
+                    <p id="date">${taskObj.date}</p>
+                    <div id="textitem">
+                        <label>
+                            <input type="checkbox" class="check" ${taskObj.checked ? "checked" : ""}>
+                            <span id="text1">${taskObj.taskText}</span>
+                        </label>
+                    </div>
+                    <button class="delete">Delete</button>
+                    </div>
+                `;
+                
+                const label = taskItem.querySelector("span");
+                label.style.textDecoration = taskObj.checked ? "line-through" : "";
+
+                if (taskObj.active) {
+                    taskItem.classList.add('active');
+                }
+
+                const deleteButton = taskItem.querySelector(".delete");
+                deleteButton.addEventListener("click", function() {
+                    taskItem.remove();
+                    saveTodosToLocalStorage();
+                });
+                
+                checkAndCrossText(taskItem);
+    
+                editTaskText(taskItem);
+                tasks.append(taskItem);
+            });
+        }
+    }
+
     removeCompleted.addEventListener("click", function() {
         const completedTasks = tasks.querySelectorAll("li");
         completedTasks.forEach(function (taskItem) {
@@ -184,53 +240,26 @@ document.addEventListener("DOMContentLoaded", function () {
         tasks.innerHTML = '';
     });
 
-    function saveTodosToLocalStorage() {
-        const taskElements = tasks.querySelectorAll("li");
-        const tasksArray = [];
+    pickToDoButton.addEventListener("click", function(){
+        const uncheckedCheckboxes = Array.from(tasks.querySelectorAll("li .check:not(:checked)"));
+        const taskElements = uncheckedCheckboxes.map(checkbox => checkbox.closest('li'));
     
         taskElements.forEach(task => {
-            tasksArray.push({
-                taskText: task.querySelector("#text1").textContent,
-                date: task.querySelector("#date").textContent,
-                checked: task.querySelector(".check").checked,
-            });
+            task.classList.remove('active');
         });
-        localStorage.setItem('todos', JSON.stringify(tasksArray));
-    }
-    
-    function loadTodosFromLocalStorage() {
-        const storedTasks = localStorage.getItem('todos');
-        if (storedTasks) {
-            const tasksArray = JSON.parse(storedTasks);
-            tasksArray.forEach(taskObj => {
-                const taskItem = document.createElement("li");
-                taskItem.innerHTML = `
-                    <div id="item">
-                    <p id="date">${taskObj.date}</p>
-                    <div id="textitem">
-                        <label>
-                            <input type="checkbox" class="check" ${taskObj.checked ? "checked" : ""}>
-                            <span id="text1">${taskObj.taskText}</span>
-                        </label>
-                    </div>
-                    <button class="delete">Delete</button>
-                    </div>
-                `;
-                
-                const label = taskItem.querySelector("span");
-                label.style.textDecoration = taskObj.checked ? "line-through" : "";
 
-                const deleteButton = taskItem.querySelector(".delete");
-                deleteButton.addEventListener("click", function() {
-                    taskItem.remove();
-                    saveTodosToLocalStorage();
-                });
-                
-                checkAndCrossText(taskItem);
-    
-                editTaskText(taskItem);
-                tasks.append(taskItem);
-            });
+        if (taskElements.length > 0) {
+            const randomIndex = Math.floor(Math.random() * taskElements.length);
+            const randomTask = taskElements[randomIndex];
+            randomTask.classList.add('active');
+            //console.log(randomTask);
         }
+        saveTodosToLocalStorage();
+    });
+
+    function autoSaveToLocalStorage() {
+        setInterval(function() {
+            saveTodosToLocalStorage();
+        }, 5000);
     }
 });

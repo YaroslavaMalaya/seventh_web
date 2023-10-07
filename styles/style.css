@@ -118,3 +118,11 @@ button:active{
 #clearStorage{
     margin-top: 10px;
 }
+
+li.active #item { 
+    background-color: #c3c9ff;
+}
+
+li.active #date{
+    color: #fff;
+}
