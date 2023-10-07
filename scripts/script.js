@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const tasks = document.getElementById("tasks");
     const removeCompleted = document.getElementById("removeCompleted");
     const removeAll = document.getElementById("removeAll");
+    const sortButton = document.getElementById("sortButton"); 
+    const clearStorageButton = document.getElementById("clearStorage");
 
     add.addEventListener("click", addTask);
     input.addEventListener("keydown", function (event) {
@@ -163,8 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     let isSorted = true; 
-    const sortButton = document.getElementById("sortButton"); 
-    sortButton.addEventListener("click", function () { 
+    sortButton.addEventListener("click", function() { 
         const allTasks = Array.from(tasks.children); 
         allTasks.sort((a, b) => { 
             const dateA = new Date(a.querySelector("#date").textContent); 
@@ -175,6 +176,12 @@ document.addEventListener("DOMContentLoaded", function () {
         allTasks.forEach(task => tasks.appendChild(task)); 
         isSorted = !isSorted; 
         saveTodosToLocalStorage();
+    });
+
+    clearStorageButton.addEventListener("click", function(){
+        localStorage.clear();
+        const tasks = document.getElementById("tasks");
+        tasks.innerHTML = '';
     });
 
     function saveTodosToLocalStorage() {
@@ -191,7 +198,6 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem('todos', JSON.stringify(tasksArray));
     }
     
-
     function loadTodosFromLocalStorage() {
         const storedTasks = localStorage.getItem('todos');
         if (storedTasks) {
