@@ -26,6 +26,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    loadTodosFromLocalStorage();
+
     function addTask() {
         const taskText = input.value.trim();
         const currentDate = new Date();
@@ -42,8 +44,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div id="item">
                 <p id="date">${date}</p>
                 <div id="textitem">
-                    <input type="checkbox" class="check">
-                    <span id="text1">${taskText}</span>
+                    <label>
+                        <input type="checkbox" class="check">
+                        <span id="text1">${taskText}</span>
+                    </label>
                 </div>
                 <button class="delete">Delete</button>
                 </div>
@@ -56,9 +60,17 @@ document.addEventListener("DOMContentLoaded", function () {
             const deleteButton = taskItem.querySelector(".delete");
             deleteButton.addEventListener("click", function () {
                 taskItem.remove();
+                saveTodosToLocalStorage();
             });
 
-            const textitemDiv = taskItem.querySelector("#item");
+            editTaskText(taskItem);
+        } else {
+            alert('Please, fill in the box and then click Add.');
+        }
+    }
+
+    function editTaskText(taskItem){
+        const textitemDiv = taskItem.querySelector("#item");
             textitemDiv.addEventListener("dblclick", function() {
                 const textSpan = textitemDiv.querySelector("#text1");
                 const originalText = textSpan.textContent;
@@ -79,9 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 });
             });
-        } else {
-            alert('Please, fill in the box and then click Add.');
-        }
+        saveTodosToLocalStorage();
     }
 
     function checkAndCrossText(taskItem) {
@@ -94,6 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 label.style.textDecoration = "none";
             }
+            saveTodosToLocalStorage();
         });
     }
 
@@ -110,9 +121,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const dateElement = taskItem.querySelector("#date");
         dateElement.textContent = date;
         tasks.insertBefore(taskItem, tasks.firstChild);
+        saveTodosToLocalStorage();
     }
 
-    removeCompleted.addEventListener("click", function () {
+    removeCompleted.addEventListener("click", function() {
         const completedTasks = tasks.querySelectorAll("li");
         completedTasks.forEach(function (taskItem) {
             const checkbox = taskItem.querySelector(".check");
@@ -120,9 +132,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 taskItem.remove();
             }
         });
+        saveTodosToLocalStorage();
     });
 
-    removeAll.addEventListener("click", function () {
+    removeAll.addEventListener("click", function() {
         const taskItems = tasks.querySelectorAll("li");
         let hasUncheckedTasks = false;
 
@@ -146,6 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     taskItem.remove();
                 });
         }
+        saveTodosToLocalStorage();
     });
 
     let isSorted = true; 
@@ -160,6 +174,56 @@ document.addEventListener("DOMContentLoaded", function () {
         }); 
         allTasks.forEach(task => tasks.appendChild(task)); 
         isSorted = !isSorted; 
+        saveTodosToLocalStorage();
     });
 
+    function saveTodosToLocalStorage() {
+        const taskElements = tasks.querySelectorAll("li");
+        const tasksArray = [];
+    
+        taskElements.forEach(task => {
+            tasksArray.push({
+                taskText: task.querySelector("#text1").textContent,
+                date: task.querySelector("#date").textContent,
+                checked: task.querySelector(".check").checked,
+            });
+        });
+    }
+    
+
+    function loadTodosFromLocalStorage() {
+        const storedTasks = localStorage.getItem('todos');
+        if (storedTasks) {
+            const tasksArray = JSON.parse(storedTasks);
+            tasksArray.forEach(taskObj => {
+                const taskItem = document.createElement("li");
+                taskItem.innerHTML = `
+                <div id="item">
+                <p id="date">${taskObj.date}</p>
+                <div id="textitem">
+                    <label>
+                        <input type="checkbox" class="check" ${taskObj.checked ? "checked" : ""}>
+                        <span id="text1">${taskObj.taskText}</span>
+                    </label>
+                </div>
+                <button class="delete">Delete</button>
+                </div>
+                `;
+                
+                const label = taskItem.querySelector("span");
+                label.style.textDecoration = taskObj.checked ? "line-through" : "";
+
+                const deleteButton = taskItem.querySelector(".delete");
+                deleteButton.addEventListener("click", function() {
+                    taskItem.remove();
+                    saveTodosToLocalStorage();
+                });
+                
+                checkAndCrossText(taskItem);
+    
+                editTaskText(taskItem);
+                tasks.append(taskItem);
+            });
+        }
+    }
 });
